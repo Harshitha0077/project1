@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/static/contact-us.css">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="icon" href="/static/temp/assets/images/icon.ico"/>
+  <title>Contact us</title>
+</head>
+
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <nav>
+      <ul>
+        <li><a href="{{ url_for('home') }}">Home</a></li>
+        <li><a href="{{ url_for('contact_us') }}">Contact us</a></li>
+        <li><a href="{{ url_for('login') }}" class="cta">Login</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- BODY -->
+  <div class="contact_us">
+    <h2>Contact Us</h2>
+    <form id="contact_usform" action="/contact_us" method="POST">
+      <label for="name">Name:</label>
+      <input type="text" id="name" name="name" required>
+
+      <label for="email">Email:</label>
+      <input type="email" id="email" name="email" required>
+
+      <label for="message">Feedback:</label>
+      <textarea id="message" name="message" required></textarea>
+
+      <input type="submit" value="Send">
+    </form>
+  </div>
+
+  {% if message %}
+  <script>
+    alert("{{ message }}");
+  </script>
+  {% endif %}
+
+</body>
+</html>
