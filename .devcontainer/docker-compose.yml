@@ -1,0 +1,39 @@
+version: "3.9"
+
+services:
+  web:
+    build:
+      context: ..
+      dockerfile: .devcontainer/web.Dockerfile
+    volumes:
+      - ..:/workspace:cached
+    working_dir: /workspace
+    command: bash -c "flask run --host=0.0.0.0 --port=5000"
+    environment:
+      - FLASK_APP=app.py
+      - FLASK_ENV=development
+      - DB_HOST=db
+      - DB_PORT=3306
+      - DB_USER=root
+      - DB_PASSWORD=
+      - DB_NAME=ev_db
+    depends_on:
+      - db
+    ports:
+      - "5000:5000"
+
+  db:
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ""
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+      MYSQL_DATABASE: ev_db
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ../EV_DB.sql:/docker-entrypoint-initdb.d/EV_DB.sql:ro
+
+volumes:
+  mysql-data:

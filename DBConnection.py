@@ -1,23 +1,24 @@
-import mysql.connector
+# DBConnection.py
 
-# Optional test connection (can be removed if not needed)
-mydb = mysql.connector.connect(
-    host="localhost",
-    port=3307,
-    user="root",
-    passwd=""
-)
+import mysql.connector
+from mysql.connector import Error
 
 class Db:
     def __init__(self):
-        self.cnx = mysql.connector.connect(
-            host="localhost",
-            port=3307,
-            user="root",
-            password="",
-            database="ev_db"
-        )
-        self.cur = self.cnx.cursor(dictionary=True, buffered=True)
+        try:
+            self.cnx = mysql.connector.connect(
+                host="db",          # MySQL service name from docker-compose
+                port=3306,
+                user="root",
+                password="",
+                database="ev_db"
+            )
+            self.cur = self.cnx.cursor(dictionary=True, buffered=True)
+            print("✅ Database connected successfully!")
+        except Error as e:
+            print(f"❌ Database connection failed: {e}")
+            # Re-raise so routes can handle it
+            raise
 
     def select(self, q, params=None):
         self.cur.execute(q, params)
@@ -41,3 +42,10 @@ class Db:
         self.cur.execute(q, params)
         self.cnx.commit()
         return self.cur.rowcount
+
+    def close(self):
+        if hasattr(self, "cur") and self.cur:
+            self.cur.close()
+        if hasattr(self, "cnx") and self.cnx and self.cnx.is_connected():
+            self.cnx.close()
+            print("✅ Database connection closed.")
